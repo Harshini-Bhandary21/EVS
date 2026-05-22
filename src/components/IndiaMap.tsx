@@ -4,6 +4,18 @@ import {
   Globe, MapPin, Eye, Activity, Shield, Wind, Droplet, 
   Flame, BatteryCharging, Trees, TrendingUp, Compass, Cpu
 } from "lucide-react";
+import DetailedIndiaMapPaths from "./DetailedIndiaMapPaths";
+
+const getCityStateId = (cityId: string) => {
+  if (cityId === "delhi") return "dl";
+  if (cityId === "mumbai" || cityId === "pune") return "mh";
+  if (cityId === "bengaluru") return "ka";
+  if (cityId === "hyderabad") return "tg";
+  if (cityId === "chennai") return "tn";
+  if (cityId === "kolkata") return "wb";
+  return "";
+};
+
 
 interface IndiaMapProps {
   onSelectCity: (selectedCenterNode: CityData) => void;
@@ -17,6 +29,7 @@ export default function IndiaMap({ onSelectCity, selectedCity }: IndiaMapProps) 
   const [atmosphericSporeAerosols, setAtmosphericSporeAerosols] = useState<Array<{ id: number; cx: number; cy: number; r: number; driftVelocity: number; opacityValue: number }>>([]);
 
   const currentlySelectedEcologicalNode = hoveredMetropolitanNode || selectedCity || CITIES_DATA[0];
+  const highlightStateId = getCityStateId(currentlySelectedEcologicalNode.id);
 
   // Micro-beacon pulsation math
   useEffect(() => {
@@ -40,8 +53,8 @@ export default function IndiaMap({ onSelectCity, selectedCity }: IndiaMapProps) 
   useEffect(() => {
     const freshSporeEntities = Array.from({ length: 15 }).map((_, sporeIndex) => ({
       id: sporeIndex,
-      cx: 50 + Math.random() * 300,
-      cy: 50 + Math.random() * 350,
+      cx: 50 + Math.random() * 500,
+      cy: 50 + Math.random() * 600,
       r: 1 + Math.random() * 2,
       driftVelocity: 0.2 + Math.random() * 0.4,
       opacityValue: 0.15 + Math.random() * 0.35,
@@ -58,7 +71,7 @@ export default function IndiaMap({ onSelectCity, selectedCity }: IndiaMapProps) 
         currentSporeSet.map((spore) => {
           let updatedVerticalY = spore.cy - spore.driftVelocity;
           if (updatedVerticalY < 20) {
-            updatedVerticalY = 420;
+            updatedVerticalY = 670;
           }
           return { ...spore, cy: updatedVerticalY };
         })
@@ -135,9 +148,9 @@ export default function IndiaMap({ onSelectCity, selectedCity }: IndiaMapProps) 
         {/* Sector Left: Geometric Vector Map Container */}
         <div className="lg:col-span-7 flex flex-col items-center justify-center relative">
           
-          <div className="relative w-full max-w-[380px] aspect-[400/450] flex items-center justify-center">
+          <div className="relative w-full max-w-[380px] aspect-[612/696] flex items-center justify-center">
             <svg
-              viewBox="0 0 400 450"
+              viewBox="0 0 612 696"
               className="w-full h-full opacity-90 transition-all duration-300 relative z-10"
               style={{
                 filter: `drop-shadow(0 0 20px rgba(16, 185, 129, 0.05))`,
@@ -157,37 +170,31 @@ export default function IndiaMap({ onSelectCity, selectedCity }: IndiaMapProps) 
               ))}
 
               {/* Geographic Cyber Coordinate Rings */}
-              <circle cx="200" cy="225" r="185" fill="none" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="4,4" opacity="0.3" />
-              <circle cx="200" cy="225" r="125" fill="none" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.25" />
-              <line x1="200" y1="20" x2="200" y2="430" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.2" />
-              <line x1="20" y1="225" x2="380" y2="225" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.2" />
+              <circle cx="306" cy="348" r="300" fill="none" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="4,4" opacity="0.3" />
+              <circle cx="306" cy="348" r="200" fill="none" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="2,4" opacity="0.25" />
+              <line x1="306" y1="20" x2="306" y2="676" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.2" />
+              <line x1="20" y1="348" x2="592" y2="348" stroke="var(--border-muted)" strokeWidth="0.5" strokeDasharray="3,3" opacity="0.2" />
 
-              {/* Unique Polyline Vector Map representation of India */}
-              <path
-                d="M 200,60 L 225,85 L 230,105 L 245,110 L 260,130 L 280,140 L 285,155 L 290,170 L 310,185 L 340,195 L 350,210 L 335,225 L 310,230 L 295,220 L 280,225 L 265,245 L 255,270 L 245,295 L 235,320 L 225,350 L 210,380 L 200,410 L 195,410 L 185,380 L 180,350 L 175,320 L 165,290 L 155,270 L 140,265 L 125,250 L 110,240 L 95,230 L 80,225 L 65,220 L 55,200 L 75,190 L 90,185 L 105,170 L 125,165 L 140,140 L 155,125 L 160,115 L 170,105 L 175,80 Z"
-                fill="rgba(15, 23, 42, 0.55)"
-                stroke="var(--accent-green)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.8"
+              {/* High-Resolution Dynamic State-by-State Vector Map of India */}
+              <DetailedIndiaMapPaths
+                highlightStateId={highlightStateId}
                 style={{
-                  filter: `drop-shadow(0 0 12px rgba(16, 185, 129, 0.12))`
+                  filter: `drop-shadow(0 0 15px rgba(16, 185, 129, 0.1))`
                 }}
               />
 
               {/* Geographic Coordinates Pulse Beacons */}
               {CITIES_DATA.map((cityNode) => {
-                let coordX = 200;
-                let coordY = 225;
+                let coordX = 306;
+                let coordY = 348;
 
-                if (cityNode.id === "delhi") { coordX = 198; coordY = 120; }
-                else if (cityNode.id === "mumbai") { coordX = 145; coordY = 245; }
-                else if (cityNode.id === "bengaluru") { coordX = 202; coordY = 325; }
-                else if (cityNode.id === "pune") { coordX = 157; coordY = 255; }
-                else if (cityNode.id === "hyderabad") { coordX = 212; coordY = 270; }
-                else if (cityNode.id === "chennai") { coordX = 230; coordY = 324; }
-                else if (cityNode.id === "kolkata") { coordX = 320; coordY = 200; }
+                if (cityNode.id === "delhi") { coordX = 196.1; coordY = 208.6; }
+                else if (cityNode.id === "mumbai") { coordX = 118.2; coordY = 387.7; }
+                else if (cityNode.id === "bengaluru") { coordX = 217.5; coordY = 544.4; }
+                else if (cityNode.id === "pune") { coordX = 138.2; coordY = 405.1; }
+                else if (cityNode.id === "hyderabad") { coordX = 231.4; coordY = 455.2; }
+                else if (cityNode.id === "chennai") { coordX = 270.8; coordY = 557.0; }
+                else if (cityNode.id === "kolkata") { coordX = 423.7; coordY = 400.0; }
 
                 const beaconHexColor = computeNodeHexSignature(cityNode);
                 const isSelectedState = currentlySelectedEcologicalNode.id === cityNode.id;

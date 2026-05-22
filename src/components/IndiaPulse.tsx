@@ -1,6 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CITIES_DATA, type CityData } from "../data/cities";
 import { Activity, Shield, Droplet, Wind, Zap, Flame, Globe2, Layers, AlertTriangle } from "lucide-react";
+import DetailedIndiaMapPaths from "./DetailedIndiaMapPaths";
+
+const getCityStateId = (cityId: string) => {
+  if (cityId === "delhi") return "dl";
+  if (cityId === "mumbai" || cityId === "pune") return "mh";
+  if (cityId === "bengaluru") return "ka";
+  if (cityId === "hyderabad") return "tg";
+  if (cityId === "chennai") return "tn";
+  if (cityId === "kolkata") return "wb";
+  return "";
+};
+
 
 interface IndiaPulseProps {
   onSelectCity: (city: CityData) => void;
@@ -12,6 +24,7 @@ type MapLayer = "aqi" | "carbon" | "green" | "water" | "rating";
 export default function IndiaPulse({ onSelectCity, selectedCity }: IndiaPulseProps) {
   const [activeLayer, setActiveLayer] = useState<MapLayer>("rating");
   const [pulseScale, setPulseScale] = useState(1);
+  const highlightStateId = getCityStateId(selectedCity.id);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Animate the beacon pulsing
@@ -253,39 +266,36 @@ export default function IndiaPulse({ onSelectCity, selectedCity }: IndiaPulsePro
           
           {/* SVG Map of India */}
           <svg
-            viewBox="0 0 400 450"
-            className="w-[320px] h-[360px] opacity-90 transition-all duration-300"
+            viewBox="0 0 612 696"
+            className="w-[320px] h-[364px] opacity-90 transition-all duration-300"
             style={{
               filter: `drop-shadow(0 0 15px rgba(5, 150, 105, 0.03))`,
             }}
           >
             {/* Grid Coordinates (Background) */}
-            <circle cx="200" cy="225" r="180" fill="none" stroke="var(--border-muted)" strokeWidth="1" strokeDasharray="4,4" />
-            <line x1="200" y1="20" x2="200" y2="430" stroke="var(--border-muted)" strokeWidth="0.5" />
-            <line x1="20" y1="225" x2="380" y2="225" stroke="var(--border-muted)" strokeWidth="0.5" />
+            <circle cx="306" cy="348" r="300" fill="none" stroke="var(--border-muted)" strokeWidth="1" strokeDasharray="4,4" />
+            <line x1="306" y1="20" x2="306" y2="676" stroke="var(--border-muted)" strokeWidth="0.5" />
+            <line x1="20" y1="348" x2="592" y2="348" stroke="var(--border-muted)" strokeWidth="0.5" />
 
-            {/* Stylized Abstract India Outline Path */}
-            <path
-              d="M 200,60 L 225,85 L 230,105 L 245,110 L 260,130 L 280,140 L 285,155 L 290,170 L 310,185 L 340,195 L 350,210 L 335,225 L 310,230 L 295,220 L 280,225 L 265,245 L 255,270 L 245,295 L 235,320 L 225,350 L 210,380 L 200,410 L 195,410 L 185,380 L 180,350 L 175,320 L 165,290 L 155,270 L 140,265 L 125,250 L 110,240 L 95,230 L 80,225 L 65,220 L 55,200 L 75,190 L 90,185 L 105,170 L 125,165 L 140,140 L 155,125 L 160,115 L 170,105 L 175,80 Z"
-              fill="var(--bg-card)"
-              stroke="var(--border-muted)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            {/* High-Resolution Dynamic State-by-State Vector Map of India */}
+            <DetailedIndiaMapPaths
+              highlightStateId={highlightStateId}
+              highlightClass="fill-accentGreen/10 stroke-accentGreen stroke-[1.5]"
+              defaultClass="fill-bgCard/30 stroke-accentGreen/15 stroke-[0.75] transition-all duration-300"
             />
 
             {/* Glowing Interactive Cities Beacons */}
             {CITIES_DATA.map((city) => {
-              let x = 200;
-              let y = 225;
+              let x = 306;
+              let y = 348;
 
-              if (city.id === "delhi") { x = 198; y = 120; }
-              else if (city.id === "mumbai") { x = 145; y = 245; }
-              else if (city.id === "bengaluru") { x = 202; y = 325; }
-              else if (city.id === "pune") { x = 157; y = 255; }
-              else if (city.id === "hyderabad") { x = 212; y = 270; }
-              else if (city.id === "chennai") { x = 230; y = 324; }
-              else if (city.id === "kolkata") { x = 320; y = 200; }
+              if (city.id === "delhi") { x = 196.1; y = 208.6; }
+              else if (city.id === "mumbai") { x = 118.2; y = 387.7; }
+              else if (city.id === "bengaluru") { x = 217.5; y = 544.4; }
+              else if (city.id === "pune") { x = 138.2; y = 405.1; }
+              else if (city.id === "hyderabad") { x = 231.4; y = 455.2; }
+              else if (city.id === "chennai") { x = 270.8; y = 557.0; }
+              else if (city.id === "kolkata") { x = 423.7; y = 400.0; }
 
               const color = getCityLayerColor(city);
               const isSelected = selectedCity.id === city.id;
